@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+<div class="col-lg-4"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<h3>Daily Cash-up</h3>
+<form method="post">
+<div class="mb-2"><label class="form-label">Branch</label><select name="branch_id" class="form-select" onchange="window.location='{{ url_for('cashup') }}?branch_id='+this.value">{% for b in branches %}<option value="{{ b.id }}" {% if b.id==selected_branch_id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}</select></div>
+<div class="mb-2"><label class="form-label">Expected Cash for Today</label><input value="{{ '%.2f'|format(expected_cash or 0) }}" class="form-control" readonly></div>
+<div class="mb-2"><label class="form-label">Counted Cash on Ground</label><input name="counted_cash" type="number" step="0.01" class="form-control" placeholder="Counted cash on ground" required></div>
+<div class="mb-2"><label class="form-label">Note</label><input name="note" class="form-control" placeholder="Note"></div>
+<button class="btn btn-brand">Save Cash-up</button>
+</form></div></div></div>
+<div class="col-lg-8"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<h3>Cash-up Records</h3><table class="table table-dark table-striped"><thead><tr><th>Date</th><th>Expected</th><th>Counted</th><th>Variance</th></tr></thead><tbody>
+{% for c in cashups %}<tr><td>{{ c.created_at }}</td><td>{{ c.expected_cash }}</td><td>{{ c.counted_cash if c.counted_cash is not none else c.actual_cash }}</td><td>{{ c.variance }}</td></tr>{% endfor %}
+</tbody></table></div></div></div></div>
+{% endblock %}

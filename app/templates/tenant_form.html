@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Create Tenant</h2>
+<div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<form method="post" class="row g-3">
+<div class="col-md-6"><label class="form-label">Business Name</label><input name="business_name" class="form-control" required></div>
+<div class="col-md-6"><label class="form-label">Owner Name</label><input name="owner_name" class="form-control" required></div>
+<div class="col-md-6"><label class="form-label">Phone</label><input name="phone" class="form-control"></div>
+<div class="col-md-6"><label class="form-label">Email</label><input name="email" class="form-control"></div>
+<div class="col-md-12"><label class="form-label">Address</label><input name="address" class="form-control"></div>
+<div class="col-md-4"><label class="form-label">Plan</label><select name="plan_id" class="form-select">{% for p in plans %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select></div>
+<div class="col-md-4"><label class="form-label">Main Branch Name</label><input name="branch_name" class="form-control" value="Main Branch"></div>
+<div class="col-md-4"><label class="form-label">Owner Username</label><input name="owner_username" class="form-control" required></div>
+<div class="col-md-4"><label class="form-label">Owner Password</label><input name="owner_password" class="form-control" value="welcome123"></div>
+<div class="col-12"><button class="btn btn-brand">Create Tenant</button></div>
+</form></div></div>
+{% endblock %}

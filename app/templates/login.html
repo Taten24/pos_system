@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-lg-5">
+    <div class="card bg-black bg-opacity-25 card-soft rounded-4">
+      <div class="card-body p-4">
+        <div class="text-center mb-3">
+          <h2 class="fw-bold">Technoplus POS Login</h2>
+          <div class="small-muted">Support: {{ support_phone }} · {{ support_email }}</div>
+        </div>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input class="form-control" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input class="form-control" name="password" type="password" required>
+          </div>
+          <button class="btn btn-brand w-100">Login</button>
+        </form>
+        <div class="small-muted mt-3 text-center">Powered by Technoplus</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

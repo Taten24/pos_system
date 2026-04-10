@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<div class="d-flex justify-content-between align-items-center mb-3"><h3>Receive Stock</h3><a class="btn btn-sm btn-outline-light" href="{{ url_for('suppliers') }}">Add Supplier</a></div>
+<form method="post">
+<div class="row g-2 mb-3">
+<div class="col-md-3"><label class="form-label">Branch</label><select name="branch_id" class="form-select">{% for b in branches %}<option value="{{ b.id }}">{{ b.name }}</option>{% endfor %}</select></div>
+<div class="col-md-3"><label class="form-label">Supplier</label><select name="supplier_id" class="form-select"><option value="">None</option>{% for s in suppliers %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select></div>
+<div class="col-md-3"><label class="form-label">Invoice Number</label><input name="invoice_number" class="form-control"></div>
+<div class="col-md-3"><label class="form-label">Note</label><input name="note" class="form-control"></div>
+</div>
+
+<div class="alert alert-info py-2 small mb-3">
+  Search a product by <strong>name</strong>, <strong>barcode</strong>, or <strong>SKU</strong>, then choose the matching item below.
+</div>
+
+<div id="lines">
+  <div class="row g-2 mb-2 line align-items-end">
+    <div class="col-md-4">
+      <label class="form-label">Search Item</label>
+      <input type="text" class="form-control product-search" placeholder="Type product name, barcode, or SKU" oninput="filterProducts(this)">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Product</label>
+      <select name="product_id" class="form-select product-select">
+        {% for p in products %}
+        <option value="{{ p.id }}" data-search="{{ (p.name ~ ' ' ~ (p.barcode or '') ~ ' ' ~ (p.sku or ''))|lower }}">{{ p.name }}{% if p.barcode %} · {{ p.barcode }}{% endif %}{% if p.sku %} · {{ p.sku }}{% endif %}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2"><label class="form-label">Qty</label><input type="number" step="0.01" name="quantity" class="form-control" placeholder="Qty"></div>
+    <div class="col-md-2"><label class="form-label">Cost</label><input type="number" step="0.01" name="cost_price" class="form-control" placeholder="Cost"></div>
+  </div>
+</div>
+<div class="d-flex gap-2 mt-3"><button type="button" class="btn btn-outline-light" onclick="addLine()">Add Another Item</button><button class="btn btn-brand">Receive Stock</button></div>
+</form></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+function filterProducts(input){
+  const line = input.closest('.line');
+  const select = line.querySelector('.product-select');
+  const allOptions = Array.from(select.querySelectorAll('option'));
+  const query = input.value.trim().toLowerCase();
+  let firstVisible = null;
+  allOptions.forEach(opt => {
+    const hay = (opt.dataset.search || opt.textContent || '').toLowerCase();
+    const show = !query || hay.includes(query);
+    opt.hidden = !show;
+    if (show && !firstVisible) firstVisible = opt;
+  });
+  if (firstVisible) select.value = firstVisible.value;
+}
+function addLine(){
+  const first = document.querySelector('.line');
+  const clone = first.cloneNode(true);
+  clone.querySelectorAll('input').forEach(i=>i.value='');
+  const select = clone.querySelector('.product-select');
+  Array.from(select.options).forEach(opt => opt.hidden = false);
+  document.getElementById('lines').appendChild(clone);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<h2>Branding, Access & Printer Settings</h2>
+<form method="post" class="row g-3">
+<div class="col-md-3"><label class="form-label">Currency</label><input name="currency" class="form-control" value="{{ setting.currency }}"></div>
+<div class="col-md-3"><label class="form-label">Theme Color</label><input name="theme_color" type="color" class="form-control form-control-color" value="{{ setting.theme_color }}"></div>
+<div class="col-md-3"><label class="form-label">Support Phone</label><input name="support_phone" class="form-control" value="{{ setting.support_phone }}"></div>
+<div class="col-md-3"><label class="form-label">Support Email</label><input name="support_email" class="form-control" value="{{ setting.support_email }}"></div>
+<div class="col-md-4"><label class="form-label">Printer Name</label><input name="printer_name" class="form-control" value="{{ setting.printer_name }}" placeholder="Browser Print or Epson TM-T20"></div>
+<div class="col-md-4"><label class="form-label">Paper Width (mm)</label><select name="paper_width_mm" class="form-select"><option value="58" {% if setting.paper_width_mm==58 %}selected{% endif %}>58mm</option><option value="80" {% if setting.paper_width_mm==80 %}selected{% endif %}>80mm</option></select></div>
+<div class="col-md-4 d-flex align-items-end"><div class="form-check"><input class="form-check-input" type="checkbox" name="auto_print_receipt" {% if setting.auto_print_receipt %}checked{% endif %}><label class="form-check-label">Auto open print dialog after sale</label></div></div>
+<div class="col-12"><label class="form-label">Receipt Footer</label><input name="receipt_footer" class="form-control" value="{{ setting.receipt_footer }}"></div>
+<div class="col-12"><button class="btn btn-brand">Save Settings</button></div>
+</form>
+<div class="mt-4 alert alert-info">Direct raw printer control is not included in browser mode. Use the receipt print button with your configured printer and paper width.</div>
+</div></div>
+{% endblock %}

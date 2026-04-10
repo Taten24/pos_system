@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+<div class="col-lg-4"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<h3>Adjust Inventory</h3>
+<form method="post" class="row g-2">
+<div class="col-12"><select name="branch_id" class="form-select">{% for b in branches %}<option value="{{ b.id }}" {% if b.id == selected_branch_id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}</select></div>
+<div class="col-12"><select name="product_id" class="form-select">{% for p in products %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select></div>
+<div class="col-md-6"><input type="number" step="0.01" name="quantity" class="form-control" placeholder="Quantity" required></div>
+<div class="col-md-6"><select name="direction" class="form-select"><option value="in">Add In</option><option value="out">Deduct Out</option></select></div>
+<div class="col-12"><input name="reason" class="form-control" placeholder="Reason"></div>
+<div class="col-12"><button class="btn btn-brand">Apply Adjustment</button></div>
+</form></div></div></div>
+<div class="col-lg-8"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h3 class="mb-0">Inventory</h3>
+  <div class="d-flex gap-2">
+    <form method="get" class="d-flex gap-2">
+      <select name="branch_id" class="form-select"> 
+        <option value="">All branches</option>
+        {% for b in branches %}<option value="{{ b.id }}" {% if b.id == selected_branch_id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
+      </select>
+      <button class="btn btn-outline-light">Filter</button>
+    </form>
+    <a class="btn btn-brand" target="_blank" href="{{ url_for('print_stock_sheet', branch_id=selected_branch_id) if selected_branch_id else url_for('print_stock_sheet') }}">Print Stock Sheet</a>
+  </div>
+</div>
+<div class="table-responsive"><table class="table table-dark table-striped"><thead><tr><th>Branch</th><th>Product</th><th>Qty</th><th>Reorder</th></tr></thead><tbody>
+{% for inv, product, branch in inventory_rows %}<tr><td>{{ branch.name }}</td><td>{{ product.name }}</td><td>{{ inv.quantity }}</td><td>{{ product.reorder_level }}</td></tr>{% else %}<tr><td colspan="4" class="text-center py-4">No inventory rows found.</td></tr>{% endfor %}
+</tbody></table></div></div></div></div></div>
+{% endblock %}

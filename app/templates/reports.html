@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Reports</h2>
+<div class="row g-3 mb-4">
+<div class="col-md-4"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><div class="small-muted">Total Sales</div><div class="fs-3 fw-bold">${{ '%.2f'|format(sales_total) }}</div></div></div></div>
+<div class="col-md-4"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><div class="small-muted">Total Expenses</div><div class="fs-3 fw-bold">${{ '%.2f'|format(expenses_total) }}</div></div></div></div>
+<div class="col-md-4"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><div class="small-muted">Total Purchases</div><div class="fs-3 fw-bold">${{ '%.2f'|format(purchases_total) }}</div></div></div></div>
+</div>
+<div class="row g-4">
+<div class="col-lg-6"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><h4>Sales by Branch</h4><table class="table table-dark table-striped"><thead><tr><th>Branch</th><th>Sales</th></tr></thead><tbody>{% for name,total in sales_by_branch %}<tr><td>{{ name }}</td><td>{{ total }}</td></tr>{% endfor %}</tbody></table></div></div></div>
+<div class="col-lg-6"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><h4>Low Stock</h4><table class="table table-dark table-striped"><thead><tr><th>Product</th><th>Qty</th></tr></thead><tbody>{% for name,qty in low_stock %}<tr><td>{{ name }}</td><td>{{ qty }}</td></tr>{% endfor %}</tbody></table></div></div></div>
+</div>
+{% endblock %}

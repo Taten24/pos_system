@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+  {% if can_manage_products %}
+  <div class="col-lg-4">
+    <div class="card bg-black bg-opacity-25 card-soft">
+      <div class="card-body">
+        <h3>Add Product</h3>
+        <form method="post" class="row g-2">
+          <input type="hidden" name="action" value="create">
+          <div class="col-12"><input name="name" class="form-control" placeholder="Product name" required></div>
+          <div class="col-md-6"><input name="barcode" class="form-control" placeholder="Barcode"></div>
+          <div class="col-md-6"><input name="sku" class="form-control" placeholder="SKU"></div>
+          <div class="col-md-6"><select name="category_id" class="form-select"><option value="">Category</option>{% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></div>
+          <div class="col-md-6"><input name="brand" class="form-control" placeholder="Brand"></div>
+          <div class="col-md-4"><input name="cost_price" step="0.01" type="number" class="form-control" placeholder="Cost"></div>
+          <div class="col-md-4"><input name="selling_price" step="0.01" type="number" class="form-control" placeholder="Sell price"></div>
+          <div class="col-md-4"><input name="tax_rate" step="0.01" type="number" class="form-control" placeholder="Tax %"></div>
+          <div class="col-md-6"><input name="reorder_level" step="0.01" type="number" class="form-control" placeholder="Reorder level"></div>
+          <div class="col-md-6"><input name="unit" class="form-control" placeholder="Unit" value="each"></div>
+          <div class="col-12"><button class="btn btn-brand">Save Product</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="{{ 'col-lg-8' if can_manage_products else 'col-lg-12' }}">
+    <div class="card bg-black bg-opacity-25 card-soft">
+      <div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <h3 class="mb-0">Products</h3>
+          <form method="get" class="row g-2 align-items-center">
+            <div class="col-auto"><input type="text" name="q" value="{{ q or '' }}" class="form-control" placeholder="Search name, barcode, SKU, brand"></div>
+            <div class="col-auto">
+              <select name="status" class="form-select">
+                <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
+              </select>
+            </div>
+            <div class="col-auto"><button class="btn btn-outline-light">Search</button></div>
+          </form>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-dark table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Name</th><th>Category</th><th>Cost</th><th>Sell</th><th>Barcode</th><th>Status</th>{% if can_manage_products %}<th>Actions</th>{% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in products %}
+              <tr>
+                <td>
+                  <div class="fw-semibold">{{ p.name }}</div>
+                  <div class="small text-light-emphasis">SKU: {{ p.sku or '-' }} | Brand: {{ p.brand or '-' }}</div>
+                </td>
+                <td>{{ p.category.name if p.category else '' }}</td>
+                <td>{{ '%.2f'|format(p.cost_price or 0) }}</td>
+                <td>{{ '%.2f'|format(p.selling_price or 0) }}</td>
+                <td>{{ p.barcode }}</td>
+                <td><span class="badge {% if p.status == 'active' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ p.status }}</span></td>
+                {% if can_manage_products %}
+                <td style="min-width:340px;">
+                  <details>
+                    <summary class="btn btn-sm btn-outline-light">Edit</summary>
+                    <form method="post" class="row g-2 mt-2">
+                      <input type="hidden" name="action" value="update">
+                      <input type="hidden" name="product_id" value="{{ p.id }}">
+                      <div class="col-md-6"><input name="name" value="{{ p.name }}" class="form-control form-control-sm" required></div>
+                      <div class="col-md-6"><select name="category_id" class="form-select form-select-sm"><option value="">Category</option>{% for c in categories %}<option value="{{ c.id }}" {% if p.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+                      <div class="col-md-4"><input name="barcode" value="{{ p.barcode }}" class="form-control form-control-sm" placeholder="Barcode"></div>
+                      <div class="col-md-4"><input name="sku" value="{{ p.sku }}" class="form-control form-control-sm" placeholder="SKU"></div>
+                      <div class="col-md-4"><input name="brand" value="{{ p.brand }}" class="form-control form-control-sm" placeholder="Brand"></div>
+                      <div class="col-md-3"><input name="cost_price" step="0.01" type="number" value="{{ p.cost_price }}" class="form-control form-control-sm"></div>
+                      <div class="col-md-3"><input name="selling_price" step="0.01" type="number" value="{{ p.selling_price }}" class="form-control form-control-sm"></div>
+                      <div class="col-md-3"><input name="tax_rate" step="0.01" type="number" value="{{ p.tax_rate }}" class="form-control form-control-sm"></div>
+                      <div class="col-md-3"><input name="reorder_level" step="0.01" type="number" value="{{ p.reorder_level }}" class="form-control form-control-sm"></div>
+                      <div class="col-md-6"><input name="unit" value="{{ p.unit }}" class="form-control form-control-sm" placeholder="Unit"></div>
+                      <div class="col-md-6 d-flex gap-2">
+                        <button class="btn btn-sm btn-brand">Save</button>
+                      </div>
+                    </form>
+                  </details>
+                  <form method="post" class="mt-2" onsubmit="return confirm('Change status for {{ p.name }}?');">
+                    <input type="hidden" name="action" value="toggle_status">
+                    <input type="hidden" name="product_id" value="{{ p.id }}">
+                    <button class="btn btn-sm {% if p.status == 'active' %}btn-outline-warning{% else %}btn-outline-success{% endif %}">{{ 'Deactivate' if p.status == 'active' else 'Activate' }}</button>
+                  </form>
+                </td>
+                {% endif %}
+              </tr>
+              {% else %}
+              <tr><td colspan="7" class="text-center py-4">No products found.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

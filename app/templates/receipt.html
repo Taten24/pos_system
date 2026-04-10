@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Receipt {{ sale.sale_number }}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>@media print {.no-print{display:none!important;} body{padding:0} .receipt-wrap{max-width:{{ setting.paper_width_mm if setting else 80 }}mm; margin:0 auto;}}</style></head>
+<body class="p-4 bg-light">
+<div class="container receipt-wrap" style="max-width:{% if setting %}{{ 420 if setting.paper_width_mm == 58 else 520 }}{% else %}520{% endif %}px">
+  <div class="no-print mb-3 d-flex gap-2 justify-content-center flex-wrap">
+    <a href="{{ url_for('pos', branch_id=branch.id) }}" class="btn btn-primary">New Sale</a>
+    <a href="{{ url_for('pos', branch_id=branch.id) }}" class="btn btn-outline-secondary">Back to POS</a>
+    <a href="{{ url_for('tenant_dashboard') }}" class="btn btn-outline-dark">Dashboard</a>
+    {% if can_print %}
+      <a href="{{ url_for('print_receipt', sale_id=sale.id) }}" class="btn btn-success">{% if sale.is_printed %}Reprint Receipt{% else %}Print Receipt{% endif %}</a>
+    {% else %}
+      <button class="btn btn-secondary" disabled>Receipt Already Printed</button>
+    {% endif %}
+  </div>
+  {% if sale.is_printed %}<div class="no-print alert alert-info py-2">Printed: {{ sale.printed_at }}{% if sale.reprint_count %} · Reprints: {{ sale.reprint_count }}{% endif %}</div>{% endif %}
+  <div class="card"><div class="card-body">
+    <h2 class="text-center">{{ tenant.business_name }}</h2>
+    <div class="text-center text-muted">{{ branch.name }} · {{ branch.address }}</div>
+    <div class="text-center text-muted">{{ branch.phone }} {{ branch.email }}</div><hr>
+    <div><strong>Receipt:</strong> {{ sale.sale_number }}</div>
+    <div><strong>Date:</strong> {{ sale.created_at }}</div>
+    <div><strong>Cashier:</strong> {{ cashier.full_name }}</div>
+    <table class="table table-sm mt-3"><thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead><tbody>{% for item in sale.items %}<tr><td>{{ item.product_name_snapshot }}</td><td>{{ item.quantity }}</td><td>{{ '%.2f'|format(item.line_total) }}</td></tr>{% endfor %}</tbody></table>
+    <div class="text-end"><div>Subtotal: {{ '%.2f'|format(sale.subtotal) }}</div><div>Tax: {{ '%.2f'|format(sale.tax_total) }}</div><div>Discount: {{ '%.2f'|format(sale.discount_total) }}</div><h4>Total: {{ '%.2f'|format(sale.grand_total) }}</h4></div>
+    <hr><div class="text-center small">{{ setting.receipt_footer if setting else 'Powered by Technoplus | +263 773 464 209 | handiwechitatenda@gmail.com' }}</div>
+    <div class="text-center small text-muted mt-1">Printed via {{ setting.printer_name if setting else 'Browser Print' }}</div>
+  </div></div>
+</div>
+{% if print_mode and setting and setting.auto_print_receipt %}<script>window.onload=function(){window.print();}</script>{% elif print_mode %}<script>window.onload=function(){window.print();}</script>{% endif %}
+</body></html>

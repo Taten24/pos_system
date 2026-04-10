@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+<div class="col-lg-5"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<h3>Stock Transfer</h3>
+<form method="post" class="row g-2">
+<div class="col-md-6"><select name="from_branch_id" class="form-select">{% for b in branches %}<option value="{{ b.id }}">From: {{ b.name }}</option>{% endfor %}</select></div>
+<div class="col-md-6"><select name="to_branch_id" class="form-select">{% for b in branches %}<option value="{{ b.id }}">To: {{ b.name }}</option>{% endfor %}</select></div>
+<div class="col-12"><select name="product_id" class="form-select">{% for p in products %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select></div>
+<div class="col-12"><input name="quantity" type="number" step="0.01" class="form-control" placeholder="Quantity"></div>
+<div class="col-12"><input name="note" class="form-control" placeholder="Note"></div>
+<div class="col-12"><button class="btn btn-brand">Transfer</button></div>
+</form></div></div></div>
+<div class="col-lg-7"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><h3>Transfer History</h3>
+<table class="table table-dark table-striped"><thead><tr><th>ID</th><th>From</th><th>To</th><th>Status</th><th>Date</th></tr></thead><tbody>
+{% for t in transfers %}<tr><td>{{ t.id }}</td><td>{{ t.from_branch_id }}</td><td>{{ t.to_branch_id }}</td><td>{{ t.status }}</td><td>{{ t.created_at }}</td></tr>{% endfor %}
+</tbody></table></div></div></div></div>
+{% endblock %}

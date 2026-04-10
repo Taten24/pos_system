@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+<div class="col-lg-5"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<h3>Process Return</h3>
+<form method="post">
+<div class="mb-2"><label class="form-label">Sale Number</label><input name="sale_number" class="form-control" required></div>
+<div class="mb-2"><label class="form-label">Refund Method</label><select name="refund_method" class="form-select"><option>cash</option><option>mobile_money</option><option>bank_transfer</option></select></div>
+<div class="mb-2"><label class="form-label">Reason</label><input name="reason" class="form-control"></div>
+<button class="btn btn-brand">Process Full Return</button>
+</form></div></div></div>
+<div class="col-lg-7"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<h3>Recent Sales</h3><table class="table table-dark table-striped"><thead><tr><th>Sale No</th><th>Total</th><th>Status</th></tr></thead><tbody>
+{% for s in recent_sales %}<tr><td>{{ s.sale_number }}</td><td>{{ s.grand_total }}</td><td>{{ s.status }}</td></tr>{% endfor %}
+</tbody></table></div></div></div></div>
+{% endblock %}

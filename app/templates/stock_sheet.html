@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+  <div>
+    <h2 class="mb-1">Stock Count Sheet</h2>
+    <div class="text-light-emphasis small">
+      {% if selected_branch %}{{ selected_branch.name }}{% else %}All accessible branches{% endif %} · Generated {{ generated_at.strftime('%Y-%m-%d %H:%M') }}
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-brand" onclick="window.print()">Print</button>
+    <a class="btn btn-outline-light" href="{{ url_for('inventory', branch_id=selected_branch.id if selected_branch else '') }}">Back to Inventory</a>
+  </div>
+</div>
+
+{% for branch_name, rows in grouped_rows.items() %}
+<div class="card bg-black bg-opacity-25 card-soft mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">{{ branch_name }}</h4>
+      <span class="small-muted">Support: {{ support_phone }} · {{ support_email }}</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-dark table-striped align-middle">
+        <thead>
+          <tr>
+            <th style="width:8%">#</th>
+            <th>Product Name</th>
+            <th class="text-end" style="width:22%">Items in Stock</th>
+            <th style="width:30%">Physical Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv, product, branch in rows %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+              <div class="fw-semibold">{{ product.name }}</div>
+              <div class="small text-light-emphasis">{{ product.barcode or product.sku or '' }}</div>
+            </td>
+            <td class="text-end">{{ '%.2f'|format(inv.quantity or 0) }}</td>
+            <td><div class="border rounded bg-white" style="height:42px"></div></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="small text-light-emphasis mt-2">Printed by Technoplus POS · {{ support_phone }} · {{ support_email }}</div>
+  </div>
+</div>
+{% else %}
+<div class="alert alert-warning">No inventory rows found for this branch selection.</div>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<style>
+@media print {
+  .navbar, .sidebar, .no-print, .alert { display: none !important; }
+  body, .container-fluid, main { background: #fff !important; color: #000 !important; }
+  .card, .card-body { background: #fff !important; color: #000 !important; box-shadow: none !important; border: 1px solid #ddd !important; }
+  .table, .table th, .table td { color: #000 !important; }
+  .small-muted, .text-light-emphasis { color: #555 !important; }
+}
+</style>
+{% endblock %}

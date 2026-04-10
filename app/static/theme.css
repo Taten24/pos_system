@@ -1,0 +1,16 @@
+body {
+  background: linear-gradient(135deg, #101828 0%, #1d2939 35%, #0f172a 100%);
+  min-height: 100vh;
+}
+.hero-bg {
+  background: radial-gradient(circle at top right, rgba(227,167,47,.28), transparent 32%),
+              linear-gradient(135deg, #0f172a, #1d2939);
+}
+.card-soft { border: 1px solid rgba(255,255,255,.08); box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+.brand-accent { color: #e3a72f; }
+.btn-brand { background: #e3a72f; border-color:#e3a72f; color:#1d2939; font-weight:600; }
+.btn-brand:hover { background:#f5b93c; border-color:#f5b93c; color:#111827; }
+.sidebar { min-height:100vh; background: rgba(15,23,42,.96); }
+.table thead th { white-space: nowrap; }
+.small-muted { color: #98a2b3; font-size: .9rem; }
+.footer-strip { background: rgba(255,255,255,.05); }

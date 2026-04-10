@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+      <h3>Add User</h3>
+      <form method="post" class="row g-2">
+        <input type="hidden" name="action" value="create">
+        <div class="col-12"><input name="full_name" class="form-control" placeholder="Full name" required></div>
+        <div class="col-md-6"><input name="username" class="form-control" placeholder="Username" required></div>
+        <div class="col-md-6"><input name="password" class="form-control" placeholder="Password" value="welcome123"></div>
+        <div class="col-md-6"><input name="email" class="form-control" placeholder="Email"></div>
+        <div class="col-md-6"><input name="phone" class="form-control" placeholder="Phone"></div>
+        <div class="col-md-6"><select name="role" class="form-select"><option value="branch_manager">Branch Manager</option><option value="cashier">Cashier</option><option value="stock_clerk">Stock Clerk</option></select></div>
+        <div class="col-md-6"><select name="branch_id" class="form-select">{% for b in branches %}<option value="{{ b.id }}">{{ b.name }}</option>{% endfor %}</select></div>
+        <div class="col-12"><button class="btn btn-brand">Add User</button></div>
+      </form>
+    </div></div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+      <h3>Users & Access</h3>
+      <div class="table-responsive"><table class="table table-dark table-striped align-middle"><thead><tr><th>Name</th><th>Role</th><th>Branch</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      {% for u in tenant_users %}
+      <tr><td>{{ u.full_name }}<div class="small text-secondary">{{ u.username }}</div></td><td>{{ u.role }}</td><td>{{ u.branch.name if u.branch else '' }}</td><td>{{ u.status }}</td><td><button class="btn btn-sm btn-outline-light" data-bs-toggle="collapse" data-bs-target="#editUser{{ u.id }}">Edit Access</button></td></tr>
+      <tr class="collapse" id="editUser{{ u.id }}"><td colspan="5">
+        <form method="post" class="row g-2">
+          <input type="hidden" name="action" value="update"><input type="hidden" name="user_id" value="{{ u.id }}">
+          <div class="col-md-3"><input name="full_name" class="form-control" value="{{ u.full_name }}"></div>
+          <div class="col-md-2"><input name="email" class="form-control" value="{{ u.email }}" placeholder="Email"></div>
+          <div class="col-md-2"><input name="phone" class="form-control" value="{{ u.phone }}" placeholder="Phone"></div>
+          <div class="col-md-2"><select name="role" class="form-select">{% for r in ['tenant_owner','branch_manager','cashier','stock_clerk'] %}<option value="{{ r }}" {% if u.role==r %}selected{% endif %}>{{ r }}</option>{% endfor %}</select></div>
+          <div class="col-md-2"><select name="branch_id" class="form-select">{% for b in branches %}<option value="{{ b.id }}" {% if u.branch_id==b.id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}</select></div>
+          <div class="col-md-1"><select name="status" class="form-select"><option value="active" {% if u.status=='active' %}selected{% endif %}>active</option><option value="disabled" {% if u.status=='disabled' %}selected{% endif %}>disabled</option></select></div>
+          <div class="col-md-4"><input name="reset_password" class="form-control" placeholder="New password (optional)"></div>
+          <div class="col-md-8"><button class="btn btn-brand btn-sm">Save Changes</button></div>
+        </form>
+      </td></tr>
+      {% endfor %}
+      </tbody></table></div>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

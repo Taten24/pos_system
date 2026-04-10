@@ -1,0 +1,2 @@
+-- This project auto-creates tables with Flask-SQLAlchemy models at first run.
+-- Keep this file as a reference starter schema placeholder.

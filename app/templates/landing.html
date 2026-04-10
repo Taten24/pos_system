@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero-bg rounded-4 p-5 card-soft">
+  <div class="row align-items-center">
+    <div class="col-lg-7">
+      <div class="text-uppercase small-muted mb-2">Multi-tenant retail software</div>
+      <h1 class="display-5 fw-bold">Technoplus POS for multiple stores and branches</h1>
+      <p class="lead text-light-emphasis">Cloud-style POS with super admin controls, freeze/unfreeze for unpaid stores, inventory, suppliers, transfers, multi-item sales, receipts, reports, and branded support contact.</p>
+      <div class="d-flex gap-3">
+        <a href="{{ url_for('login') }}" class="btn btn-brand btn-lg">Open System</a>
+        <a href="#plans" class="btn btn-outline-light btn-lg">View Plans</a>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card bg-dark-subtle text-dark rounded-4 card-soft">
+        <div class="card-body">
+          <h4 class="fw-bold">Why it feels professional</h4>
+          <ul class="mb-0">
+            <li>Admin owner dashboard</li>
+            <li>Tenant and branch isolation</li>
+            <li>Suppliers, stock receive, transfers, returns</li>
+            <li>Inventory adjustments and low stock tracking</li>
+            <li>Receipts with phone and email</li>
+            <li>Modern premium retail theme</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="plans" class="mt-4">
+  <div class="row g-4">
+    {% for plan in plans %}
+    <div class="col-md-4">
+      <div class="card card-soft bg-black bg-opacity-25 h-100">
+        <div class="card-body">
+          <h3 class="brand-accent">{{ plan.name }}</h3>
+          <p class="display-6 fw-bold">${{ '%.0f'|format(plan.monthly_price) }}<span class="fs-6">/month</span></p>
+          <p class="text-light-emphasis">Branches: {{ plan.branch_limit }} · Users: {{ plan.user_limit }}</p>
+          <p class="small-muted">Support: {{ support_phone }} · {{ support_email }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

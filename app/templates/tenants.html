@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h2>Tenants</h2><a class="btn btn-brand" href="{{ url_for('new_tenant') }}">Add Tenant</a></div>
+<div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+<div class="table-responsive">
+<table class="table table-dark table-striped">
+<thead><tr><th>Business</th><th>Owner</th><th>Plan</th><th>Status</th><th>Phone</th><th>Email</th><th>Expiry</th><th>Actions</th></tr></thead>
+<tbody>
+{% for t in tenants %}
+<tr>
+<td>{{ t.business_name }}</td><td>{{ t.owner_name }}</td><td>{{ t.plan.name if t.plan else '' }}</td><td>{{ t.status }}</td><td>{{ t.phone }}</td><td>{{ t.email }}</td><td>{{ t.expiry_date }}</td>
+<td class="d-flex gap-1 flex-wrap">
+<a href="{{ url_for('tenant_branches', tenant_id=t.id) }}" class="btn btn-sm btn-outline-light">Branches</a>
+<a href="{{ url_for('toggle_tenant_status', tenant_id=t.id, status='active') }}" class="btn btn-sm btn-success">Activate</a>
+<a href="{{ url_for('toggle_tenant_status', tenant_id=t.id, status='paused') }}" class="btn btn-sm btn-warning">Pause</a>
+<a href="{{ url_for('toggle_tenant_status', tenant_id=t.id, status='frozen') }}" class="btn btn-sm btn-danger">Freeze</a>
+</td>
+</tr>
+{% endfor %}
+</tbody></table></div></div></div>
+{% endblock %}

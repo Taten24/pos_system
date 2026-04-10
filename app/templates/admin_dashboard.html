@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Super Admin Dashboard</h2>
+<div class="row g-3 mb-4">
+  {% for label, value in [('Tenants', counts.tenants), ('Active', counts.active), ('Frozen/Paused', counts.frozen), ('Expired', counts.expired), ('Branches', counts.branches)] %}
+  <div class="col-md-2">
+    <div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><div class="small-muted">{{ label }}</div><div class="fs-2 fw-bold">{{ value }}</div></div></div>
+  </div>
+  {% endfor %}
+</div>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card bg-black bg-opacity-25 card-soft">
+      <div class="card-body">
+        <div class="d-flex justify-content-between"><h4>Recent Tenants</h4><a class="btn btn-sm btn-brand" href="{{ url_for('new_tenant') }}">Add Tenant</a></div>
+        <div class="table-responsive mt-3">
+          <table class="table table-dark table-striped">
+            <thead><tr><th>Business</th><th>Status</th><th>Expiry</th><th>Action</th></tr></thead>
+            <tbody>
+              {% for t in tenants %}
+              <tr>
+                <td>{{ t.business_name }}</td>
+                <td><span class="badge bg-{{ 'success' if t.status=='active' else 'warning' if t.status=='trial' else 'danger' }}">{{ t.status }}</span></td>
+                <td>{{ t.expiry_date }}</td>
+                <td><a class="btn btn-sm btn-outline-light" href="{{ url_for('tenant_branches', tenant_id=t.id) }}">Branches</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div></div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card bg-black bg-opacity-25 card-soft">
+      <div class="card-body">
+        <h4>Recent Audit Logs</h4>
+        <div class="list-group list-group-flush">
+          {% for log in recent_logs %}
+          <div class="list-group-item bg-transparent text-light">
+            <div class="fw-semibold">{{ log.action_type }} · {{ log.entity_type }}</div>
+            <div class="small-muted">{{ log.description }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div></div>
+  </div>
+</div>
+{% endblock %}

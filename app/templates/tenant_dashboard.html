@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">{{ current_user.tenant.business_name }} Dashboard</h2>
+<div class="row g-3">
+  {% for label, value in [('Today Sales', metrics.today_sales), ('Month Sales', metrics.month_sales), ('Month Expenses', metrics.month_expenses), ('Gross Estimate', metrics.gross_estimate)] %}
+  <div class="col-md-3"><div class="card bg-black bg-opacity-25 card-soft"><div class="card-body"><div class="small-muted">{{ label }}</div><div class="fs-3 fw-bold">${{ '%.2f'|format(value) }}</div></div></div></div>
+  {% endfor %}
+</div>
+<div class="row g-4 mt-1">
+  <div class="col-lg-6">
+    <div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+      <h4>Top Products</h4>
+      <ul class="list-group list-group-flush">
+        {% for name, sold in metrics.top_products %}
+          <li class="list-group-item bg-transparent text-light d-flex justify-content-between"><span>{{ name }}</span><span>{{ '%.2f'|format(-sold) }}</span></li>
+        {% else %}
+          <li class="list-group-item bg-transparent text-light">No sales yet.</li>
+        {% endfor %}
+      </ul>
+    </div></div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card bg-black bg-opacity-25 card-soft"><div class="card-body">
+      <h4>Low Stock Alerts</h4>
+      <ul class="list-group list-group-flush">
+        {% for name, qty, reorder in metrics.low_stock %}
+          <li class="list-group-item bg-transparent text-light d-flex justify-content-between"><span>{{ name }}</span><span>{{ qty }} / reorder {{ reorder }}</span></li>
+        {% else %}
+          <li class="list-group-item bg-transparent text-light">No low stock alerts.</li>
+        {% endfor %}
+      </ul>
+    </div></div>
+  </div>
+</div>
+{% endblock %}
